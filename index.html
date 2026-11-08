@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TikTok Master Suite with Real-time Wallet & Trillion Accessories</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-900 font-sans text-slate-100 antialiased">
+
+    <div class="max-w-7xl mx-auto p-4 sm:p-6 my-6 bg-slate-800 shadow-2xl rounded-2xl border border-slate-700">
+        <!-- Header & Live Wallet Dashboard -->
+        <div class="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4 mb-6 pb-4 border-b border-slate-700">
+            <div>
+                <h1 class="text-2xl font-black text-white flex items-center gap-2">
+                    🛍️ TikTok PC Master Suite & Real-Time Wallet
+                </h1>
+                <p class="text-sm text-slate-400">Real-time money generator, accessories store (₱1 to ₱1 Trillion), and full order recovery.</p>
+            </div>
+            
+            <!-- WALLET DISPLAY CARD -->
+            <div class="bg-gradient-to-r from-amber-500 to-yellow-600 text-slate-950 px-5 py-3 rounded-2xl shadow-lg flex items-center gap-4 w-full lg:w-auto justify-between">
+                <div>
+                    <div class="text-[10px] font-black uppercase tracking-wider text-slate-900/70">TikTok Live Wallet</div>
+                    <div id="walletDisplay" class="text-2xl font-black">₱1,000,000</div>
+                    <div id="walletTimer" class="text-[10px] font-bold text-slate-900/80">Active Time: 0m 0s</div>
+                </div>
+                <button onclick="openStoreModal()" class="bg-slate-950 text-yellow-400 hover:bg-slate-900 px-4 py-2 rounded-xl text-xs font-black transition shadow">
+                    🛒 Luxury Store
+                </button>
+            </div>
+        </div>
+
+        <!-- Action Nav Bar -->
+        <div class="flex flex-wrap items-center gap-2 mb-6">
+            <button onclick="openCatalogModal()" class="bg-indigo-950 text-indigo-300 hover:bg-indigo-900 px-4 py-2.5 rounded-xl text-sm font-semibold transition border border-indigo-800">
+                📚 1,000+ Catalog
+            </button>
+            <button onclick="openTrashModal()" class="bg-amber-950 text-amber-300 hover:bg-amber-900 px-4 py-2.5 rounded-xl text-sm font-semibold transition border border-amber-800">
+                🗑️ Recycle Bin History (<span id="trashCount">0</span>)
+            </button>
+            <button onclick="openStoreModal()" class="bg-yellow-950 text-yellow-300 hover:bg-yellow-900 px-4 py-2.5 rounded-xl text-sm font-semibold transition border border-yellow-800">
+                💎 Trillion Accessories Shop
+            </button>
+            <button onclick="toggleErrorConsole()" class="bg-rose-950 text-rose-300 hover:bg-rose-900 px-4 py-2.5 rounded-xl text-sm font-semibold transition border border-rose-800">
+                ⚠️ Error Logs
+            </button>
+        </div>
+
+        <!-- Error Console Drawer -->
+        <div id="errorConsole" class="mb-6 bg-slate-950 text-rose-400 p-4 rounded-xl font-mono text-xs hidden border border-rose-500/30">
+            <div class="flex justify-between items-center mb-2 pb-2 border-b border-slate-800">
+                <span class="font-bold text-rose-300">🚨 Wallet & System Diagnostics</span>
+                <button onclick="toggleErrorConsole()" class="text-slate-400 hover:text-white">✕ Close</button>
+            </div>
+            <div id="errorLogList" class="space-y-1 text-rose-300">
+                <div>[SYSTEM]: Wallet timer active. Generating ₱1 per second in real-time.</div>
+                <div>[CHECK]: 1-Hour milestone unlocked automatic ₱1,000,000 capital seed.</div>
+            </div>
+        </div>
+
+        <!-- Active Orders Table -->
+        <div class="overflow-x-auto rounded-xl border border-slate-700 shadow-sm">
+            <table class="w-full text-left border-collapse">
+                <thead>
+                    <tr class="bg-slate-900 text-slate-400 text-xs uppercase font-bold tracking-wider">
+                        <th class="p-3.5">Petsa / Origin</th>
+                        <th class="p-3.5">Pangalan ng Item & Shop</th>
+                        <th class="p-3.5">Courier & ETA</th>
+                        <th class="p-3.5">Presyo</th>
+                        <th class="p-3.5">Status</th>
+                        <th class="p-3.5 text-center">Aksyon</th>
+                    </tr>
+                </thead>
+                <tbody id="orderTableBody" class="divide-y divide-slate-700 text-sm">
+                    <!-- Dynamic Rows -->
+                </tbody>
+            </table>
+        </div>
+        
+        <div id="emptyState" class="text-center py-12 text-slate-500 hidden">
+            Wala pang nakasulat na order. Pumili sa Store o Catalog!
+        </div>
+    </div>
+
+    <!-- TRILLION ACCESSORIES STORE MODAL (₱1 to ₱1 Trillion with Validation) -->
+    <div id="storeModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center hidden z-50 p-4 overflow-y-auto">
+        <div class="bg-slate-900 rounded-2xl p-6 w-full max-w-4xl shadow-2xl border border-slate-700 my-8">
+            <div class="flex justify-between items-center pb-4 border-b border-slate-700 mb-4">
+                <div>
+                    <h3 class="text-lg font-extrabold text-white">💎 TikTok Luxury & Accessories Store (₱1 to ₱1 Trillion)</h3>
+                    <p class="text-xs text-slate-400">Bumili gamit ang iyong naipong wallet balance. May validation kung kulang ang pera mo!</p>
+                </div>
+                <button onclick="closeStoreModal()" class="text-slate-400 hover:text-white bg-slate-800 p-2 rounded-full transition">✕</button>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 max-h-[60vh] overflow-y-auto p-1">
+                <!-- Store Items ranging from ₱1 to 1 Trillion -->
+                <div class="bg-slate-800 p-4 rounded-xl border border-slate-700 flex flex-col justify-between">
+                    <div>
+                        <div class="text-2xl mb-1">🔑</div>
+                        <h4 class="font-bold text-white text-sm">TikTok Sticker Keychain</h4>
+                        <p class="text-xs text-slate-400 mt-1">Simple cute merch sticker.</p>
+                    </div>
+                    <div class="mt-4 flex items-center justify-between">
+                        <span class="font-black text-yellow-400 text-sm">₱1</span>
+                        <button onclick="buyAccessory('TikTok Sticker Keychain', 1)" class="bg-yellow-500 hover:bg-yellow-400 text-slate-950 px-3 py-1.5 rounded-lg text-xs font-black transition">Bumili</button>
+                    </div>
+                </div>
+
+                <div class="bg-slate-800 p-4 rounded-xl border border-slate-700 flex flex-col justify-between">
+                    <div>
+                        <div class="text-2xl mb-1">🎧</div>
+                        <h4 class="font-bold text-white text-sm">Pro Gamer Headset</h4>
+                        <p class="text-xs text-slate-400 mt-1">RGB LED studio sound.</p>
+                    </div>
+                    <div class="mt-4 flex items-center justify-between">
+                        <span class="font-black text-yellow-400 text-sm">₱2,500</span>
+                        <button onclick="buyAccessory('Pro Gamer Headset', 2500)" class="bg-yellow-500 hover:bg-yellow-400 text-slate-950 px-3 py-1.5 rounded-lg text-xs font-black transition">Bumili</button>
+                    </div>
+                </div>
+
+                <div class="bg-slate-800 p-4 rounded-xl border border-slate-700 flex flex-col justify-between">
+                    <div>
+                        <div class="text-2xl mb-1">🚗</div>
+                        <h4 class="font-bold text-white text-sm">Sports Luxury Supercar</h4>
+                        <p class="text-xs text-slate-400 mt-1">V12 engine custom wrap.</p>
+                    </div>
+                    <div class="mt-4 flex items-center justify-between">
+                        <span class="font-black text-yellow-400 text-sm">₱15,000,000</span>
+                        <button onclick="buyAccessory('Sports Luxury Supercar', 15000000)" class="bg-yellow-500 hover:bg-yellow-400 text-slate-950 px-3 py-1.5 rounded-lg text-xs font-black transition">Bumili</button>
+                    </div>
+                </div>
+
+                <div class="bg-slate-800 p-4 rounded-xl border border-slate-700 flex flex-col justify-between">
+                    <div>
+                        <div class="text-2xl mb-1">🏝️</div>
+                        <h4 class="font-bold text-white text-sm">Private Tropical Island</h4>
+                        <p class="text-xs text-slate-400 mt-1">Pribadong isla na may beach villa.</p>
+                    </div>
+                    <div class="mt-4 flex items-center justify-between">
+                        <span class="font-black text-yellow-400 text-sm">₱5,000,000,000</span>
+                        <button onclick="buyAccessory('Private Tropical Island', 5000000000)" class="bg-yellow-500 hover:bg-yellow-400 text-slate-950 px-3 py-1.5 rounded-lg text-xs font-black transition">Bumili</button>
+                    </div>
+                </div>
+
+                <div class="bg-slate-800 p-4 rounded-xl border border-slate-700 flex flex-col justify-between">
+                    <div>
+                        <div class="text-2xl mb-1">🚀</div>
+                        <h4 class="font-bold text-white text-sm">Interstellar Space Station</h4>
+                        <p class="text-xs text-slate-400 mt-1">Buong orbital space station para sa live streaming.</p>
+                    </div>
+                    <div class="mt-4 flex items-center justify-between">
+                        <span class="font-black text-yellow-400 text-sm">₱1,000,000,000,000</span>
+                        <button onclick="buyAccessory('Interstellar Space Station', 1000000000000)" class="bg-yellow-500 hover:bg-yellow-400 text-slate-950 px-3 py-1.5 rounded-lg text-xs font-black transition">Bumili</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-6 pt-4 border-t border-slate-700 flex justify-end">
+                <button onclick="closeStoreModal()" class="bg-slate-800 hover:bg-slate-700 text-white px-5 py-2 rounded-xl text-sm font-semibold transition">Isara</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- RECYCLE BIN HISTORY MODAL -->
+    <div id="trashModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center hidden z-50 p-4 overflow-y-auto">
+        <div class="bg-slate-900 rounded-2xl p-6 w-full max-w-3xl shadow-2xl border border-slate-700 my-8">
+            <div class="flex justify-between items-center pb-4 border-b border-slate-700 mb-4">
+                <div>
+                    <h3 class="text-lg font-extrabold text-white">🗑️ Recycle Bin (Order Recovery History)</h3>
+                    <p class="text-xs text-slate-400">Lahat ng mga tinanggal mong order ay nakalista rito. Pwede mong i-restore pabalik sa listahan!</p>
+                </div>
+                <button onclick="closeTrashModal()" class="text-slate-400 hover:text-white bg-slate-800 p-2 rounded-full transition">✕</button>
+            </div>
+
+            <div class="overflow-x-auto rounded-xl border border-slate-700 max-h-80 overflow-y-auto">
+                <table class="w-full text-left border-collapse text-sm">
+                    <thead class="bg-slate-950 sticky top-0 text-xs text-slate-400 uppercase font-bold">
+                        <tr>
+                            <th class="p-3">Petsa / Item</th>
+                            <th class="p-3">Shop</th>
+                            <th class="p-3">Presyo</th>
+                            <th class="p-3 text-center">Aksyon</th>
+                        </tr>
+                    </thead>
+                    <tbody id="trashTableBody" class="divide-y divide-slate-800">
+                        <!-- Populated by JS -->
+                    </tbody>
+                </table>
+            </div>
+            <div id="trashEmptyState" class="text-center py-8 text-slate-500 text-sm hidden">
+                Walang laman ang Recycle Bin.
+            </div>
+
+            <div class="mt-6 pt-4 border-t border-slate-700 flex justify-between items-center">
+                <button onclick="emptyTrashCompletely()" class="bg-rose-950 hover:bg-rose-900 text-rose-300 px-4 py-2 rounded-xl text-xs font-semibold transition border border-rose-800">Linisin ang Recycle Bin</button>
+                <button onclick="closeTrashModal()" class="bg-slate-800 hover:bg-slate-700 text-white px-5 py-2 rounded-xl text-sm font-semibold transition">Isara</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- CATALOG MODAL -->
+    <div id="catalogModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center hidden z-50 p-4 overflow-y-auto">
+        <div class="bg-slate-900 rounded-2xl p-6 w-full max-w-4xl shadow-2xl border border-slate-700 my-8">
+            <div class="flex justify-between items-center pb-4 border-b border-slate-700 mb-4">
+                <div>
+                    <h3 class="text-lg font-extrabold text-white">📚 TikTok Shop 1,000+ Master Catalog</h3>
+                    <p class="text-xs text-slate-400">Pumili ng item na bibilhin gamit ang iyong wallet balance.</p>
+                </div>
+                <button onclick="closeCatalogModal()" class="text-slate-400 hover:text-white bg-slate-800 p-2 rounded-full transition">✕</button>
+            </div>
+            
+            <div class="mb-4">
+                <input type="text" id="catalogSearch" oninput="filterCatalog()" placeholder="Maghanap ng item..." class="w-full border border-slate-700 rounded-xl p-3 text-sm focus:ring-2 focus:ring-yellow-500 outline-none bg-slate-800 text-white">
+            </div>
+
+            <div class="max-h-96 overflow-y-auto rounded-xl border border-slate-700">
+                <table class="w-full text-left border-collapse text-sm">
+                    <thead class="bg-slate-950 sticky top-0 text-xs text-slate-400 uppercase font-bold">
+                        <tr>
+                            <th class="p-3">Item & Shop</th>
+                            <th class="p-3">Presyo</th>
+                            <th class="p-3">Courier & ETA</th>
+                            <th class="p-3 text-center">Aksyon</th>
+                        </tr>
+                    </thead>
+                    <tbody id="catalogTableBody" class="divide-y divide-slate-800">
+                        <!-- Populated by JS -->
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="mt-6 pt-4 border-t border-slate-700 flex justify-end">
+                <button onclick="closeCatalogModal()" class="bg-slate-800 hover:bg-slate-700 text-white px-5 py-2 rounded-xl text-sm font-semibold transition">Isara</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script>
+        // WALLET & TIME ENGINE
+        let walletBalance = Number(localStorage.getItem('tiktok_wallet_balance')) || 1000000;
+        let totalSeconds = Number(localStorage.getItem('tiktok_wallet_seconds')) || 0;
+
+        function updateWalletUI() {
+            document.getElementById('walletDisplay').innerText = '₱' + walletBalance.toLocaleString();
+            let mins = Math.floor(totalSeconds / 60);
+            let secs = totalSeconds % 60;
+            document.getElementById('walletTimer').innerText = `Active Time: ${mins}m ${secs}s`;
+            localStorage.setItem('tiktok_wallet_balance', walletBalance);
+            localStorage.setItem('tiktok_wallet_seconds', totalSeconds);
+        }
+
+        // Real-time interval every 1 second (+₱1)
+        setInterval(() => {
+            totalSeconds++;
+            walletBalance += 1; // ₱1 per second
+
+            // 2-5 minutes bonus = +₱5
+            if (totalSeconds >= 120 && totalSeconds <= 300 && totalSeconds % 60 === 0) {
+                walletBalance += 5;
+            }
+            // 10-50 minutes bonus = +₱10
+            if (totalSeconds >= 600 && totalSeconds <= 3000 && totalSeconds % 60 === 0) {
+                walletBalance += 10;
+            }
+            // Exactly 1 hour (3600 seconds) = +₱1,000,000 instant seed
+            if (totalSeconds === 3600) {
+                walletBalance += 1000000;
+                alert('Congratulations! Naabot mo ang 1 hour mark. Nadagdagan ng ₱1,000,000 ang iyong TikTok wallet!');
+            }
+
+            updateWalletUI();
+        }, 1000);
+
+        // Master Catalog Database
+        const masterCatalog = [];
+        for (let i = 1; i <= 1000; i++) {
+            const categories = ['Gadgets & Tech', 'Apparel & Fashion', 'Home & Living', 'Luxury Collectibles'];
+            const couriers = ['J&T Express', 'SPX Express', 'Flash Express', 'Ninja Van'];
+            const cat = categories[i % categories.length];
+            masterCatalog.push({
+                id: i,
+                item: `${cat} Premium Item #${i}`,
+                shop: `Verified TikTok Store #${i % 50 + 1}`,
+                price: Math.floor(Math.random() * 50000) + 150,
+                origin: i % 2 === 0 ? 'Overseas Export Hub' : 'Local Metro Manila Hub',
+                courier: couriers[i % couriers.length],
+                eta: `${Math.floor(Math.random() * 3) + 1}-${Math.floor(Math.random() * 4) + 4} Days`
+            });
+        }
+
+        let orders = JSON.parse(localStorage.getItem('tiktok_master_orders')) || [
+            {
+                id: 1,
+                date: '2026-11-01',
+                item: 'Wireless Earbuds TWS Pro',
+                shop: 'Gadget Hub MNL',
+                origin: 'Manila Central Fulfillment Center',
+                courier: 'J&T Express',
+                eta: 'Delivered (Nov 3)',
+                price: 499,
+                status: 'Delivered'
+            }
+        ];
+
+        let trashBin = JSON.parse(localStorage.getItem('tiktok_master_trash')) || [];
+
+        function renderTable() {
+            const tbody = document.getElementById('orderTableBody');
+            const emptyState = document.getElementById('emptyState');
+            tbody.innerHTML = '';
+
+            if (orders.length === 0) {
+                emptyState.classList.remove('hidden');
+            } else {
+                emptyState.classList.add('hidden');
+            }
+
+            orders.forEach((order) => {
+                let badgeColor = 'bg-slate-800 text-slate-300';
+                if(order.status === 'Shipping') badgeColor = 'bg-purple-950 text-purple-300';
+                if(order.status === 'Delivered') badgeColor = 'bg-emerald-950 text-emerald-300';
+
+                const row = document.createElement('tr');
+                row.className = 'hover:bg-slate-750 transition';
+                row.innerHTML = `
+                    <td class="p-3.5">
+                        <div class="font-semibold text-white">${order.date}</div>
+                        <div class="text-xs text-slate-400">📍 ${order.origin}</div>
+                    </td>
+                    <td class="p-3.5">
+                        <div class="font-bold text-white">${order.item}</div>
+                        <div class="text-xs text-slate-400">${order.shop}</div>
+                    </td>
+                    <td class="p-3.5">
+                        <div class="font-semibold text-slate-300">${order.courier}</div>
+                        <div class="text-xs text-slate-400">ETA: ${order.eta}</div>
+                    </td>
+                    <td class="p-3.5 font-bold text-yellow-400">₱${Number(order.price).toLocaleString()}</td>
+                    <td class="p-3.5"><span class="px-3 py-1 rounded-full text-xs font-extrabold ${badgeColor}">${order.status}</span></td>
+                    <td class="p-3.5 text-center">
+                        <button onclick="moveToTrash(${order.id})" class="text-rose-400 hover:text-rose-300 text-xs font-bold transition">Burahin</button>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+
+            localStorage.setItem('tiktok_master_orders', JSON.stringify(orders));
+            document.getElementById('trashCount').innerText = trashBin.length;
+            renderTrashTable();
+        }
+
+        // BUY ACCESSORY WITH WALLET VALIDATION
+        function buyAccessory(itemName, price) {
+            if (walletBalance < price) {
+                alert(`❌ KULANG ANG PERA MO! Mayroon ka lamang na ₱${walletBalance.toLocaleString()}, ngunit ang presyo ay ₱${price.toLocaleString()}. Maghintay na madagdagan ang iyong wallet ipon!`);
+                return;
+            }
+
+            // Deduct wallet and create order
+            walletBalance -= price;
+            updateWalletUI();
+
+            const newOrder = {
+                id: Date.now(),
+                date: new Date().toISOString().split('T')[0],
+                item: itemName,
+                shop: 'TikTok Luxury Official Store',
+                origin: 'Central Vault Hub',
+                courier: 'J&T Express VIP',
+                eta: '1-2 Days',
+                price: price,
+                status: 'Shipping'
+            };
+
+            orders.unshift(newOrder);
+            renderTable();
+            closeStoreModal();
+            alert(`🎉 Tagumpay ang pagbili ng "${itemName}"! Nabawasan ang iyong wallet ng ₱${price.toLocaleString()}.`);
+        }
+
+        // CATALOG ORDER WITH WALLET VALIDATION
+        function orderFromCatalog(catalogId) {
+            const catItem = masterCatalog.find(c => c.id === catalogId);
+            if(!catItem) return;
+
+            if (walletBalance < catItem.price) {
+                alert(`❌ KULANG ANG PERA MO! Kailangan mo ng ₱${catItem.price.toLocaleString()}, ngunit ₱${walletBalance.toLocaleString()} lang ang laman ng iyong wallet.`);
+                return;
+            }
+
+            walletBalance -= catItem.price;
+            updateWalletUI();
+
+            const newOrder = {
+                id: Date.now(),
+                date: new Date().toISOString().split('T')[0],
+                item: catItem.item,
+                shop: catItem.shop,
+                origin: catItem.origin,
+                courier: catItem.courier,
+                eta: catItem.eta,
+                price: catItem.price,
+                status: 'To Ship'
+            };
+
+            orders.unshift(newOrder);
+            renderTable();
+            closeCatalogModal();
+            alert(`Matagumpay na naorder ang "${catItem.item}" mula sa Catalog!`);
+        }
+
+        // RECYCLE BIN FUNCTIONS
+        function moveToTrash(id) {
+            const index = orders.findIndex(o => o.id === id);
+            if (index > -1) {
+                const deleted = orders.splice(index, 1)[0];
+                trashBin.unshift(deleted);
+                renderTable();
+            }
+        }
+
+        function restoreOrder(id) {
+            const index = trashBin.findIndex(t => t.id === id);
+            if (index > -1) {
+                const restored = trashBin.splice(index, 1)[0];
+                orders.unshift(restored);
+                renderTable();
+            }
+        }
+
+        function deleteForever(id) {
+            if(confirm('Sigurado ka bang gusto mong burahin ito nang tuluyan?')) {
+                trashBin = trashBin.filter(t => t.id !== id);
+                renderTable();
+            }
+        }
+
+        function emptyTrashCompletely() {
+            if(confirm('Gusto mo bang linisin ang lahat sa Recycle Bin?')) {
+                trashBin = [];
+                renderTable();
+            }
+        }
+
+        function renderTrashTable() {
+            const tbody = document.getElementById('trashTableBody');
+            const emptyState = document.getElementById('trashEmptyState');
+            tbody.innerHTML = '';
+
+            if (trashBin.length === 0) {
+                emptyState.classList.remove('hidden');
+                return;
+            } else {
+                emptyState.classList.add('hidden');
+            }
+
+            trashBin.forEach((item) => {
+                const row = document.createElement('tr');
+                row.className = 'hover:bg-slate-800 transition';
+                row.innerHTML = `
+                    <td class="p-3 text-white">
+                        <div class="font-bold">${item.item}</div>
+                        <div class="text-xs text-slate-400">Silenced/Deleted</div>
+                    </td>
+                    <td class="p-3 text-slate-400">${item.shop}</td>
+                    <td class="p-3 font-bold text-yellow-400">₱${Number(item.price).toLocaleString()}</td>
+                    <td class="p-3 text-center space-x-2">
+                        <button onclick="restoreOrder(${item.id})" class="text-emerald-400 hover:text-emerald-300 text-xs font-bold">I-restore</button>
+                        <button onclick="deleteForever(${item.id})" class="text-rose-400 hover:text-rose-300 text-xs font-bold">Burahin Tuluyan</button>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+            localStorage.setItem('tiktok_master_trash', JSON.stringify(trashBin));
+        }
+
+        function renderCatalogTable(items) {
+            const tbody = document.getElementById('catalogTableBody');
+            tbody.innerHTML = '';
+            items.slice(0, 50).forEach(item => {
+                const row = document.createElement('tr');
+                row.className = 'hover:bg-slate-800 transition';
+                row.innerHTML = `
+                    <td class="p-3">
+                        <div class="font-bold text-white">${item.item}</div>
+                        <div class="text-xs text-slate-400">${item.shop} • 📍 ${item.origin}</div>
+                    </td>
+                    <td class="p-3 font-bold text-yellow-400">₱${Number(item.price).toLocaleString()}</td>
+                    <td class="p-3 text-xs text-slate-300">${item.courier} (${item.eta})</td>
+                    <td class="p-3 text-center">
+                        <button onclick="orderFromCatalog(${item.id})" class="bg-yellow-500 hover:bg-yellow-400 text-slate-950 px-3 py-1.5 rounded-lg text-xs font-black transition">
+                            Bumili (Order)
+                        </button>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        function filterCatalog() {
+            const q = document.getElementById('catalogSearch').value.toLowerCase();
+            const res = masterCatalog.filter(c => c.item.toLowerCase().includes(q) || c.shop.toLowerCase().includes(q));
+            renderCatalogTable(res);
+        }
+
+        function toggleErrorConsole() { document.getElementById('errorConsole').classList.toggle('hidden'); }
+        function openStoreModal() { document.getElementById('storeModal').classList.remove('hidden'); }
+        function closeStoreModal() { document.getElementById('storeModal').classList.add('hidden'); }
+        function openTrashModal() { renderTrashTable(); document.getElementById('trashModal').classList.remove('hidden'); }
+        function closeTrashModal() { document.getElementById('trashModal').classList.add('hidden'); }
+        function openCatalogModal() { renderCatalogTable(masterCatalog); document.getElementById('catalogModal').classList.remove('hidden'); }
+        function closeCatalogModal() { document.getElementById('catalogModal').classList.add('hidden'); }
+
+        // Initial Load
+        updateWalletUI();
+        renderTable();
+    </script>
+</body>
+</html>
